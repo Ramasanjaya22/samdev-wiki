@@ -10,8 +10,7 @@ secrets.json
 *.key
 *.pem
 
-# Credentials
-.github/
+# Credentials (never commit; NOTE: .github/ workflows are committed intentionally)
 credentials.json
 *.credentials
 

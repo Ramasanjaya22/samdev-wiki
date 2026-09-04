@@ -54,8 +54,9 @@ agents:
 
 swarm_settings:
   orchestration: manual_approval
-  auto_merge: false
-  auto_create_pr: true
+  auto_merge: opt-in-per-pr  # via agent_auto_pr.sh --auto-merge (squash, green-CI-gated)
+  auto_create_pr: true  # via scripts/agent_auto_pr.sh
+  merge_strategy: squash
   default_branch: main
   branch_prefix: agent/
   commit_style: conventional_commits
