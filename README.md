@@ -68,10 +68,14 @@ Reviews code, runs tests, ensures quality.
 
 **URL**: https://agents.footygraph.com
 
+**Temporary Access**: http://localhost:8000 (direct IP)
+
 Served via:
 - Static site server: Python HTTP server on port 8000
 - Cloudflared tunnel: `agents.footygraph.com` → localhost:8000
 - Directory: `/opt/samdev-wiki/public/`
+
+**DNS Status**: CNAME record added, propagation may take 5-30 minutes
 
 ## 🔐 GitHub Authentication
 
