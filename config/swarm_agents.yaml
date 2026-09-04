@@ -1,0 +1,84 @@
+# Agent Configuration for Swarm Operations
+# This file defines the two specialist coding agents
+
+agents:
+  - name: expert-coding-implementer
+    role: Senior Software Engineer / Implementation Specialist
+    description: |
+      Telah implementasi fitur, perbaiki bug, tulis kode produksi yang bersih, modular, dan aman.
+      Mengikuti arsitektur existing repository.
+    capabilities:
+      - read_file
+      - write_file
+      - edit_file
+      - run_command
+      - git_add
+      - git_commit
+      - git_push
+      - create_pull_request
+    constraints:
+      - tidak force push
+      - tidak delete branch
+      - tidak push ke default branch tanpa persetujuan
+      - gunakan typing ketat (Python)
+      - hindari dependency baru kecuali wajib
+      - commit kecil dan fokus
+    handoff_to: expert-coding-reviewer
+    working_directory: /opt/samdev-wiki
+    commit_style: conventional_commits
+    branch_prefix: agent/
+
+  - name: expert-coding-reviewer
+    role: Principal Code Reviewer / QA Automation Specialist
+    description: |
+      Review hasil coding, pastikan kode aman, konsisten, dan sesuai arsitektur.
+      Jalankan test, lint, dan check. Berikan approval atau request changes.
+    capabilities:
+      - read_file
+      - run_command
+      - git_diff
+      - git_status
+      - run_tests
+      - review_pull_request
+      - comment_pull_request
+      - request_changes
+    constraints:
+      - tidak merge kecuali semua check lolos
+      - tidak approve jika secret bocor
+      - tidak approve jika test gagal
+      - pastikan PR memiliki deskripsi lengkap
+      - pastikan branch bukan default branch
+    handoff_from: expert-coding-implementer
+    working_directory: /opt/samdev-wiki
+    validation_required: true
+
+swarm_settings:
+  orchestration: manual_approval
+  auto_merge: false
+  auto_create_pr: true
+  default_branch: main
+  branch_prefix: agent/
+  commit_style: conventional_commits
+  validation_before_commit: true
+  validation_before_push: true
+  token_env_var: GH_TOKEN
+  gh_cli_required: true
+
+security:
+  no_force_push: true
+  no_delete_branch: true
+  no_direct_to_default: true
+  no_secrets_in_code: true
+  minimum_token_scopes:
+    - contents: read/write
+    - pull_requests: read/write
+    - metadata: read
+  credential_helper: cache
+  credential_timeout: 3600
+
+workflow:
+  step_1: orchestrator creates branch agent/<task>-<timestamp>
+  step_2: expert-coding-implementer writes code
+  step_3: expert-coding-reviewer reviews and tests
+  step_4: if approved, create PR
+  step_5: user reviews and merges manually
