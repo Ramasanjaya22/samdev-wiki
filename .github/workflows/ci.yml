@@ -1,0 +1,71 @@
+name: agent-swarm-ci
+
+on:
+  push:
+    branches: ['agent/**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bash syntax check (all agent scripts)
+        run: |
+          fail=0
+          for f in scripts/*.sh; do
+            bash -n "$f" || fail=1
+          done
+          exit $fail
+
+      - name: Secret scan (no hardcoded credentials)
+        run: |
+          # Real PATs are 36+ chars after prefix; placeholders like
+          # ghp_your_token_here / ghp_xxx contain underscores or are short.
+          if grep -rEn '(ghp_[A-Za-z0-9]{20,}|gho_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|sk-[A-Za-z0-9]{20,})' \
+            --exclude-dir=.git --exclude='*.md' . ; then
+            echo "::error::Potential hardcoded secret found"
+            exit 1
+          fi
+          echo "No hardcoded secrets"
+
+      - name: Required swarm files present
+        run: |
+          for f in \
+            scripts/agent_branch.sh \
+            scripts/agent_commit_push.sh \
+            scripts/agent_create_pr.sh \
+            scripts/agent_auto_pr.sh \
+            scripts/agent_validate.sh \
+            scripts/test_acceptance.sh \
+            config/swarm_agents.yaml \
+            docs/agent-github-setup.md \
+            docs/coding-agents.md \
+            docs/cicd.md \
+            public/index.html \
+            .env.example \
+            .gitignore ; do
+            [ -f "$f" ] || { echo "::error::Missing required file: $f"; exit 1; }
+          done
+          echo "All required files present"
+
+      - name: Scripts are executable
+        run: |
+          for f in scripts/*.sh; do
+            [ -x "$f" ] || { echo "::error::Not executable: $f"; exit 1; }
+          done
+          echo "All scripts executable"
+
+      - name: Conventional Commits check (PR title / HEAD message)
+        run: |
+          MSG="${{ github.event.pull_request.title || '' }}"
+          if [ -z "$MSG" ]; then
+            MSG="$(git log -1 --pretty=%s)"
+          fi
+          if ! echo "$MSG" | grep -qE '^(feat|fix|chore|refactor|test|docs|perf|style|ci|build)(\(.+\))?: .+'; then
+            echo "::error::Message does not follow Conventional Commits: $MSG"
+            exit 1
+          fi
+          echo "Commit style OK: $MSG"
