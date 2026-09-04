@@ -1,0 +1,28 @@
+# Caddy configuration for agent swarm frontend
+# Place at /etc/caddy/Caddyfile or use with docker
+
+hermes-docs.footygraph.com {
+    root * /opt/samdev-wiki/public
+    file_server
+    
+    # Enable compression
+    encode zstd gzip
+    
+    # Security headers
+    header {
+        Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+    
+    # Redirect HTTP to HTTPS (if behind cloudflared)
+    @http {
+        protocol http
+    }
+    
+    # Health check endpoint
+    handle /health {
+        respond "OK" 200 "text/plain"
+    }
+}
