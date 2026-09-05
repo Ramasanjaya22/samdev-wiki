@@ -56,12 +56,17 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    line-height: 1.2;
   }
 
   .subtitle {
     font-size: 17px;
     color: var(--text-secondary);
     margin: 0 0 20px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
   }
 
   .status {
@@ -87,6 +92,7 @@
     border-radius: 50%;
     background: currentColor;
     animation: pulse 2s infinite;
+    flex-shrink: 0;
   }
 
   @keyframes pulse {
@@ -105,20 +111,22 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px;
+    padding: 20px 12px;
     text-align: center;
+    min-width: 0;
   }
 
   .stat-value {
     font-size: 28px;
     font-weight: 800;
     color: var(--accent);
+    line-height: 1;
   }
 
   .stat-label {
     font-size: 13px;
     color: var(--text-muted);
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
   .features {
@@ -134,6 +142,7 @@
     border-radius: 12px;
     padding: 24px;
     transition: border-color 0.15s, transform 0.15s;
+    min-width: 0;
   }
 
   .feature-card:hover {
@@ -165,6 +174,7 @@
     gap: 12px;
     justify-content: center;
     padding-bottom: 40px;
+    flex-wrap: wrap;
   }
 
   .btn-primary {
@@ -177,6 +187,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.15s;
+    white-space: nowrap;
   }
 
   .btn-primary:hover {
@@ -193,6 +204,7 @@
     font-weight: 500;
     text-decoration: none;
     transition: all 0.15s;
+    white-space: nowrap;
   }
 
   .btn-secondary:hover {
@@ -200,9 +212,82 @@
     color: var(--accent);
   }
 
-  @media (max-width: 600px) {
-    .hero h1 { font-size: 28px; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .features { grid-template-columns: 1fr; }
+  /* Tablet */
+  @media (max-width: 900px) {
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .hero {
+      padding: 24px 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 28px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+    }
+
+    .features {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .feature-card {
+      padding: 20px;
+    }
+
+    .stat-card {
+      padding: 16px 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+    }
+  }
+
+  /* Small mobile */
+  @media (max-width: 400px) {
+    .hero h1 {
+      font-size: 24px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+    }
+
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      padding: 12px 6px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      text-align: center;
+      padding: 14px 20px;
+    }
+
+    .cta {
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 </style>

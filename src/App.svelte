@@ -18,7 +18,7 @@
       <button class="menu-btn" on:click={() => $sidebarOpen = true}>☰</button>
       <div class="topbar-title">
         <span>{currentIcon}</span>
-        <span>{currentTitle}</span>
+        <span class="topbar-text">{currentTitle}</span>
       </div>
       <div class="topbar-actions">
         <a href="https://github.com/Ramasanjaya22/samdev-wiki" target="_blank" rel="noopener" class="gh-link">
@@ -63,12 +63,17 @@
     padding: 0;
   }
 
+  :global(html) {
+    overflow-x: hidden;
+  }
+
   :global(body) {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg-base);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   :global(::selection) {
@@ -100,6 +105,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   .topbar {
@@ -113,6 +119,7 @@
     top: 0;
     z-index: 50;
     backdrop-filter: blur(12px);
+    gap: 12px;
   }
 
   .menu-btn {
@@ -120,10 +127,12 @@
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 20px;
+    font-size: 22px;
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    line-height: 1;
   }
 
   .menu-btn:hover {
@@ -136,11 +145,20 @@
     gap: 8px;
     font-weight: 600;
     font-size: 15px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .topbar-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .topbar-actions {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .gh-link {
@@ -163,19 +181,48 @@
     margin: 0 auto;
     padding: 32px 40px;
     width: 100%;
+    overflow-x: hidden;
   }
 
+  /* Tablet */
+  @media (max-width: 1024px) {
+    .content {
+      margin-left: 260px;
+    }
+  }
+
+  /* Mobile */
   @media (max-width: 768px) {
     .content {
       margin-left: 0;
     }
 
     .menu-btn {
-      display: block;
+      display: flex;
+    }
+
+    .topbar {
+      padding: 10px 16px;
     }
 
     .page {
-      padding: 24px 20px;
+      padding: 20px 16px;
+    }
+  }
+
+  /* Small mobile */
+  @media (max-width: 400px) {
+    .topbar {
+      padding: 8px 12px;
+    }
+
+    .page {
+      padding: 16px 12px;
+    }
+
+    .menu-btn {
+      padding: 4px 8px;
+      font-size: 20px;
     }
   }
 </style>
